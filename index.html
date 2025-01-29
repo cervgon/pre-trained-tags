@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+
+    <title>Label Detection Based on Synonyms</title>
+    <style>
+        body {
+        font-family: Roboto, sans-serif;
+        }
+        .tag {
+            font-weight: normal;
+            color: #1A1A1A;
+            background-color:#0D69F222;
+            border-radius: 16px;
+            border: 1px solid #0D69F2;
+            padding: 4px 8px;
+            margin: 4px;
+            display: inline-block;
+        }
+        .tags .tag{
+            background-color: white;
+            border-color: #ccc;
+            color: gray;
+        }
+
+        .results {
+            color: gray;
+        }
+        .container{
+            max-width: 600px;
+            margin: 100px auto 20px;
+            text-align: center;
+        }
+        #text-input {
+            width: 100%;
+            padding: 16px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .label {
+            margin-bottom: 10px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FI Narrative Demo</h1>
+
+        <i>E.g. The subject made an <b>unauthorized entry</b> <b>carrying a gun</b> riding an <b>electric bike</b>, and <b>hit</b>ting the garage door</i>
+        <br>
+        <br>
+        <p class="label">PRE-TRAINED TAGS AVAILABLE</p>
+        <div class="tags"><span class="tag">Crash</span><span class="tag">E-bike</span><span class="tag">E Bike HRMNY</span><span class="tag">Gun Possession</span><span class="tag">Trespassing</span></div>
+        <br>
+        <br>
+        <textarea id="text-input" rows="10" cols="30" placeholder="Type something here..."></textarea>
+
+        <p class="label">DETECTED TAGS</p>
+        <div id="detected-labels" class="results"></div>
+
+    </div>
+
+    <script>
+        // Define a list of synonyms for each label
+        const labels = {
+            'Crash': ['crash','crashed','crashing','collision','collided','colliding','wreck','wrecked','wrecking','smash','smashed','smashing','impact','impacted','impacting','pileup','piled up','piling up','fender bender','fender benders','hit','hitting','bumped','bumping','slam','slammed','slamming','bang','banged','banging','prang','pranged','pranging','mishap','mishaps','tangle','tangled','tangling','crush','crushed','crushing','shunt','shunted','shunting','crassh','crashedh','crashingh','collison','colided','collidng','creash','crasshing','chrash','crass','carsh','craash','crrash','crasj','crsh','crsssh','chrashed'],
+            'E-bike': ['e-bike','electric bike','ebike','e bicycle','electric bicycle','pedal-assist bike','pedelec','electric scooter','motorized bike','motor-assisted bicycle','power bike','battery bike','electric two-wheeler','e-scooter','eletric bike','e-bicke','ebik','e-bick','electric bycicle','elctric bike','e-bicyle','electrik bike','e-bik'],
+            'Gun Possession': ['gun possession','firearm possession','weapon possession','armed possession','illegal possession of a firearm','illegal gun possession','unlawful firearm possession','carrying a weapon','carrying a firearm','unlawful possession of a weapon','possession of a firearm','possession of a weapon','carrying a gun','firearm ownership','gun ownership','illegal carrying of a firearm','unregistered firearm possession','weapon carrying','firearm carry','possessing a gun','posessing a firearm','gun posession','firearm posession','weapon posession','gun possesion','possesion of a firearm','posessing a weapon','gun possesion charge','posess a gun'],
+            'Trespassing': ['trespassing','trespass','trespasses','trespassed','trespasser','trespassers','trespassing','unlawful entry','unlawfully entering','illegally entering','illegal entry','intrude','intrudes','intruded','intruding','intrusion','encroach','encroaches','encroached','encroaching','encroachment','breaking and entering','entering unlawfully','unauthorized access','unauthorized entry','invade','invades','invaded','invading','invasion','illegal trespassing','criminal trespassing','illegal entry to property','illegal presence','entering without permission','violating property boundaries','unlawful trespass','illegal trespass','tresspassing','tresspass','trespasssing','trepassing','tresspassing','trespasin','tresspasin','trespasing','tresppassing','trespassers','tresspas','trespas'],
+            'E Bike HRMNY': ['e bike hrmny','ebike hrmny','electric bike hrmny','e-bike harmony','electric bicycle hrmny','ebike harmony','e-bike hrmny','e bike harmony','electric bike harmony','e bicycle hrmny','electric bicycle harmony','ebike hrmony','e bike hrmony','e-bike hrmony','e-bike hrnmy','e bike hrmni','ebike hrmni','e-bike hrmni','electric bike hrmni','ebike hrnmy','e bike hrnmy','electric bike hrnmy','e bike harmny','electric bike harmny','e bike hrmoni']
+        };
+
+        // Function to detect labels based on input text
+        function detectLabels() {
+            const inputText = document.getElementById('text-input').value.toLowerCase();
+            const detectedLabels = [];
+
+            // Check each label and its synonyms
+            for (const [label, synonyms] of Object.entries(labels)) {
+                for (const synonym of synonyms) {
+                    if (inputText.includes(synonym)) {
+                        // Add the label to the result if it matches
+                        if (!detectedLabels.includes(label)) {
+                            detectedLabels.push(label);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Display the detected labels
+            const resultsDiv = document.getElementById('detected-labels');
+            if (detectedLabels.length > 0) {
+                resultsDiv.innerHTML = detectedLabels.map(label => `<span class="tag">${label.charAt(0).toUpperCase() + label.slice(1)}</span>`).join('');
+            } else {
+                resultsDiv.innerHTML = '<span>No matching labels found.</span>';
+            }
+        }
+
+        // Listen for input changes in the textarea
+        document.getElementById('text-input').addEventListener('input', detectLabels);
+    </script>
+</body>
+</html>
