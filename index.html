@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
 
-    <title>Label Detection Based on Synonyms</title>
+    <title>FI Narrative</title>
     <style>
         body {
         font-family: Roboto, sans-serif;
@@ -20,7 +20,7 @@
             margin: 4px;
             display: inline-block;
         }
-        .tags .tag{
+        .tags .label{
             background-color: white;
             border-color: #ccc;
             color: gray;
@@ -29,16 +29,40 @@
         .results {
             color: gray;
         }
+        .highlight{
+            background-color: #0D69F222;
+        }
         .container{
-            max-width: 600px;
-            margin: 100px auto 20px;
+            max-width: 700px;
+            margin: 10px auto 20px;
             text-align: center;
         }
-        #text-input {
+        #textbox{
+            max-width: 700px;
+            height: 400px;
+            position: relative;
+            margin: 0 auto 0;
+        }
+        #text-input, #outputDiv {
+            border: 0;
+            display: block;
+            position: absolute;
+            text-align: left;
+            font-family: monospace;
             width: 100%;
+            height: 400px;
             padding: 16px;
             box-sizing: border-box;
             font-size: 16px;
+            background-color: transparent;
+        }
+        #text-input{
+            outline: 1px solid #0066FF;
+            resize: none;
+        }
+        #outputDiv{
+            color: transparent;
+            z-index: -1;
         }
         .label {
             margin-bottom: 10px;
@@ -50,23 +74,24 @@
     <div class="container">
         <h1>FI Narrative Demo</h1>
 
-        <i>E.g. The subject made an <b>unauthorized entry</b> <b>carrying a gun</b> riding an <b>electric bike</b>, and <b>hit</b>ting the garage door</i>
+        <i>E.g. The subject made an <span class="highlight">unauthorized entry</span> riding an <span class="highlight">electric bike</span> and <span class="highlight">carrying a gun</span>.</i>
         <br>
         <br>
+
+        <div id="textbox">
+            <textarea id="text-input" rows="10" cols="30" placeholder="Type something here..."></textarea>
+            <div class="output" id="outputDiv"></div>
+        </div>
+        <p class="label">DETECTED TAGS</p>
+        <div id="detected-tags" class="results">...</div>
+        <br>    
         <p class="label">PRE-TRAINED TAGS AVAILABLE</p>
         <div class="tags"><span class="tag">Crash</span><span class="tag">E-bike</span><span class="tag">E Bike HRMNY</span><span class="tag">Gun Possession</span><span class="tag">Trespassing</span></div>
-        <br>
-        <br>
-        <textarea id="text-input" rows="10" cols="30" placeholder="Type something here..."></textarea>
-
-        <p class="label">DETECTED TAGS</p>
-        <div id="detected-labels" class="results"></div>
-
     </div>
 
     <script>
-        // Define a list of synonyms for each label
-        const labels = {
+        // Define a list of synonyms for each tag
+        const tags = {
             'Crash': ['crash','crashed','crashing','collision','collided','colliding','wreck','wrecked','wrecking','smash','smashed','smashing','impact','impacted','impacting','pileup','piled up','piling up','fender bender','fender benders','hit','hitting','bumped','bumping','slam','slammed','slamming','bang','banged','banging','prang','pranged','pranging','mishap','mishaps','tangle','tangled','tangling','crush','crushed','crushing','shunt','shunted','shunting','crassh','crashedh','crashingh','collison','colided','collidng','creash','crasshing','chrash','crass','carsh','craash','crrash','crasj','crsh','crsssh','chrashed'],
             'E-bike': ['e-bike','electric bike','ebike','e bicycle','electric bicycle','pedal-assist bike','pedelec','electric scooter','motorized bike','motor-assisted bicycle','power bike','battery bike','electric two-wheeler','e-scooter','eletric bike','e-bicke','ebik','e-bick','electric bycicle','elctric bike','e-bicyle','electrik bike','e-bik'],
             'Gun Possession': ['gun possession','firearm possession','weapon possession','armed possession','illegal possession of a firearm','illegal gun possession','unlawful firearm possession','carrying a weapon','carrying a firearm','unlawful possession of a weapon','possession of a firearm','possession of a weapon','carrying a gun','firearm ownership','gun ownership','illegal carrying of a firearm','unregistered firearm possession','weapon carrying','firearm carry','possessing a gun','posessing a firearm','gun posession','firearm posession','weapon posession','gun possesion','possesion of a firearm','posessing a weapon','gun possesion charge','posess a gun'],
@@ -74,35 +99,55 @@
             'E Bike HRMNY': ['e bike hrmny','ebike hrmny','electric bike hrmny','e-bike harmony','electric bicycle hrmny','ebike harmony','e-bike hrmny','e bike harmony','electric bike harmony','e bicycle hrmny','electric bicycle harmony','ebike hrmony','e bike hrmony','e-bike hrmony','e-bike hrnmy','e bike hrmni','ebike hrmni','e-bike hrmni','electric bike hrmni','ebike hrnmy','e bike hrnmy','electric bike hrnmy','e bike harmny','electric bike harmny','e bike hrmoni']
         };
 
-        // Function to detect labels based on input text
-        function detectLabels() {
+        function detectTags() {
             const inputText = document.getElementById('text-input').value.toLowerCase();
-            const detectedLabels = [];
-
-            // Check each label and its synonyms
-            for (const [label, synonyms] of Object.entries(labels)) {
+            const detectedTags = [];
+            const outputDiv = document.getElementById("outputDiv");
+            for (const [tag, synonyms] of Object.entries(tags)) {
                 for (const synonym of synonyms) {
                     if (inputText.includes(synonym)) {
-                        // Add the label to the result if it matches
-                        if (!detectedLabels.includes(label)) {
-                            detectedLabels.push(label);
+                        // Add the tag to the result if it matches
+                        if (!detectedTags.includes(tag)) {
+                            detectedTags.push(tag);
                         }
                         break;
+                    }
+                    
+                }
+            }
+
+            const keywords = [];
+            for (const [tag, synonyms] of Object.entries(tags)) {
+                for (const synonym of synonyms) {
+                    if (inputText.includes(synonym)) {
+                        if (!keywords.includes(synonym)) {
+                            keywords.push(synonym)
+                        }
                     }
                 }
             }
 
-            // Display the detected labels
-            const resultsDiv = document.getElementById('detected-labels');
-            if (detectedLabels.length > 0) {
-                resultsDiv.innerHTML = detectedLabels.map(label => `<span class="tag">${label.charAt(0).toUpperCase() + label.slice(1)}</span>`).join('');
+            // Display the detected tags
+            const resultsDiv = document.getElementById('detected-tags');
+            if (detectedTags.length > 0) {
+                resultsDiv.innerHTML = detectedTags.map(tag => `<span class="tag">${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`).join('');
             } else {
-                resultsDiv.innerHTML = '<span>No matching labels found.</span>';
+                resultsDiv.innerHTML = '<span>No matching tags found.</span>';
             }
-        }
 
-        // Listen for input changes in the textarea
-        document.getElementById('text-input').addEventListener('input', detectLabels);
+            const escapeHTML = (str) =>
+                str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            const highlightKeywords = (text) => {
+                const regex = new RegExp(`\\b(${keywords.join("|")})\\b`, "gi"); // Match whole words, case insensitive
+                return text.replace(regex, (match) => `<span class="highlight">${match}</span>`);
+            };
+            const textWithLineBreaks = inputText.replace(/\n/g, '<br>');
+            const highlightedText = highlightKeywords(textWithLineBreaks);
+            outputDiv.innerHTML = highlightedText;
+            console.log(keywords)
+        }
+        document.getElementById('text-input').addEventListener('input', detectTags);
     </script>
 </body>
 </html>
