@@ -25,6 +25,9 @@
             border-color: #ccc;
             color: gray;
         }
+        .notag{
+            color:#aaa
+        }
 
         .results {
             color: gray;
@@ -80,16 +83,16 @@
             margin-bottom: 10px;
             color: #999;
         }
+        .example {
+            text-align: justify;
+            text-justify: inter-word;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>FI Narrative Demo</h1>
-
-        <i>E.g. At 10:45 PM, officers responded to a <span class="hightlight">wreck</span> near Elm Street and Maple Avenue. A disoriented male suspect was found next to an overturned electric scooter. Nearby, signs of a break-in were discovered, and surveillance footage linked the suspect to the crime. A search of his backpack revealed a firearm and methamphetamine. He was arrested for unlawful firearm possession, drug possession, and breaking and entering. The suspect was transported for questioning, and the case remains under investigation.</i>
-        <br>
-        <br>
-
+    
         <div id="textbox">
             <textarea autofocus id="text-input" rows="10" cols="30" placeholder="Type something here..."></textarea>
             <div class="output" id="outputDiv"></div>
@@ -105,6 +108,10 @@
             <span class="tag">Narcotics</span>
             <span class="tag">Trespassing</span>
         </div>
+        <p class="label">EXAMPLE</p>
+        <p class="example">
+            <i>At 10:45 PM, officers responded to a <span class="highlight">wreck</span> near Elm Street and Maple Avenue. A disoriented male suspect was found next to an overturned <span class="highlight">electric scooter</span>. Nearby, signs of a break-in were discovered, and surveillance footage linked the suspect to the crime. A search of his backpack revealed a firearm and <span class="highlight">methamphetamine</span>. He was arrested for <span class="highlight">unlawful firearm possession</span>, <span class="highlight">drug possession</span>, and <span class="highlight"></span>breaking and entering</span>. The suspect was transported for questioning, and the case remains under investigation.</i>
+            </p>
     </div>
 
     <script>
@@ -169,7 +176,7 @@
             if (detectedTags.length > 0) {
                 resultsDiv.innerHTML = detectedTags.map(tag => `<span class="tag">${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`).join('');
             } else {
-                resultsDiv.innerHTML = '<span>No matching tags found.</span>';
+                resultsDiv.innerHTML = '<span class="notag">No matching tags found.</span>';
             }
         }
         document.getElementById('text-input').addEventListener('input', detectTags);
