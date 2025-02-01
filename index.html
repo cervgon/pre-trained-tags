@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
 
-    <title>FI Narrative</title>
+    <title>FI Narrative POC</title>
     <style>
         body {
         font-family: Roboto, sans-serif;
@@ -30,7 +30,8 @@
             color: gray;
         }
         .highlight{
-            background-color: #0D69F222;
+            background-color: #3b0df21c;
+            /* border-bottom: 2px solid #0D69F2; */
         }
         .container{
             max-width: 700px;
@@ -39,9 +40,15 @@
         }
         #textbox{
             max-width: 700px;
-            height: 400px;
             position: relative;
             margin: 0 auto 0;
+            max-height: 300px;
+            overflow: hidden;
+            overflow-y: auto;
+            outline: 1px solid #0D69F299;
+        }
+        #textbox:focus-within {
+            outline: 1px solid #0D69F2;
         }
         #text-input, #outputDiv {
             border: 0;
@@ -50,19 +57,24 @@
             text-align: left;
             font-family: monospace;
             width: 100%;
-            height: 400px;
             padding: 16px;
             box-sizing: border-box;
             font-size: 16px;
+            line-height: 1.75em;
             background-color: transparent;
         }
         #text-input{
             outline: 1px solid #0066FF;
             resize: none;
+            overflow: hidden;
         }
         #outputDiv{
             color: transparent;
             z-index: -1;
+        }
+        #textbox,#text-input, #outputDiv{
+            height: auto;
+            min-height: 350px;
         }
         .label {
             margin-bottom: 10px;
@@ -74,78 +86,91 @@
     <div class="container">
         <h1>FI Narrative Demo</h1>
 
-        <i>E.g. The subject made an <span class="highlight">unauthorized entry</span> riding an <span class="highlight">electric bike</span> and <span class="highlight">carrying a gun</span>.</i>
+        <i>E.g. At 10:45 PM, officers responded to a <span class="hightlight">wreck</span> near Elm Street and Maple Avenue. A disoriented male suspect was found next to an overturned electric scooter. Nearby, signs of a break-in were discovered, and surveillance footage linked the suspect to the crime. A search of his backpack revealed a firearm and methamphetamine. He was arrested for unlawful firearm possession, drug possession, and breaking and entering. The suspect was transported for questioning, and the case remains under investigation.</i>
         <br>
         <br>
 
         <div id="textbox">
-            <textarea id="text-input" rows="10" cols="30" placeholder="Type something here..."></textarea>
+            <textarea autofocus id="text-input" rows="10" cols="30" placeholder="Type something here..."></textarea>
             <div class="output" id="outputDiv"></div>
         </div>
         <p class="label">DETECTED TAGS</p>
         <div id="detected-tags" class="results">...</div>
         <br>    
         <p class="label">PRE-TRAINED TAGS AVAILABLE</p>
-        <div class="tags"><span class="tag">Crash</span><span class="tag">E-bike</span><span class="tag">E Bike HRMNY</span><span class="tag">Gun Possession</span><span class="tag">Trespassing</span></div>
+        <div class="tags">
+            <span class="tag">Crash</span>
+            <span class="tag">E-bike</span>
+            <span class="tag">Gun Possession</span>
+            <span class="tag">Narcotics</span>
+            <span class="tag">Trespassing</span>
+        </div>
     </div>
 
     <script>
         // Define a list of synonyms for each tag
         const tags = {
-            'Crash': ['crash','crashed','crashing','collision','collided','colliding','wreck','wrecked','wrecking','smash','smashed','smashing','impact','impacted','impacting','pileup','piled up','piling up','fender bender','fender benders','hit','hitting','bumped','bumping','slam','slammed','slamming','bang','banged','banging','prang','pranged','pranging','mishap','mishaps','tangle','tangled','tangling','crush','crushed','crushing','shunt','shunted','shunting','crassh','crashedh','crashingh','collison','colided','collidng','creash','crasshing','chrash','crass','carsh','craash','crrash','crasj','crsh','crsssh','chrashed'],
-            'E-bike': ['e-bike','electric bike','ebike','e bicycle','electric bicycle','pedal-assist bike','pedelec','electric scooter','motorized bike','motor-assisted bicycle','power bike','battery bike','electric two-wheeler','e-scooter','eletric bike','e-bicke','ebik','e-bick','electric bycicle','elctric bike','e-bicyle','electrik bike','e-bik'],
+            'Crash': ['crash','crashed','crashing','collision','collided','colliding','wreck','wrecked','wrecking','smash','smashed','smashing','impact','impacted','impacting','pileup','piled up','piling up','fender bender','fender benders','hit','hitting','bumped','bumping','slam','slammed','slamming','bang','banged','banging','prang','pranged','pranging','mishap','mishaps','tangle','tangled','tangling','crush','crushed','crushing','shunt','shunted','shunting','crassh','crashedh','crashingh','collison','colided','collidng','creash','crasshing','chrash','crass','carsh','craash','crrash','crasj','crsh','crsssh','chrashed','accident'],
+            'E-bike': ['e-bike','electric bike','ebike','e bicycle','electric bicycle','pedal-assist bike','pedelec','electric scooter','motorized bike','motor-assisted bicycle','power bike','battery bike','electric two-wheeler','e-scooter','eletric bike','e-bicke','ebik','e-bick','electric bycicle','elctric bike','e-bicyle','electrik bike','e-bik','hrmny'],
             'Gun Possession': ['gun possession','firearm possession','weapon possession','armed possession','illegal possession of a firearm','illegal gun possession','unlawful firearm possession','carrying a weapon','carrying a firearm','unlawful possession of a weapon','possession of a firearm','possession of a weapon','carrying a gun','firearm ownership','gun ownership','illegal carrying of a firearm','unregistered firearm possession','weapon carrying','firearm carry','possessing a gun','posessing a firearm','gun posession','firearm posession','weapon posession','gun possesion','possesion of a firearm','posessing a weapon','gun possesion charge','posess a gun'],
-            'Trespassing': ['trespassing','trespass','trespasses','trespassed','trespasser','trespassers','trespassing','unlawful entry','unlawfully entering','illegally entering','illegal entry','intrude','intrudes','intruded','intruding','intrusion','encroach','encroaches','encroached','encroaching','encroachment','breaking and entering','entering unlawfully','unauthorized access','unauthorized entry','invade','invades','invaded','invading','invasion','illegal trespassing','criminal trespassing','illegal entry to property','illegal presence','entering without permission','violating property boundaries','unlawful trespass','illegal trespass','tresspassing','tresspass','trespasssing','trepassing','tresspassing','trespasin','tresspasin','trespasing','tresppassing','trespassers','tresspas','trespas'],
-            'E Bike HRMNY': ['e bike hrmny','ebike hrmny','electric bike hrmny','e-bike harmony','electric bicycle hrmny','ebike harmony','e-bike hrmny','e bike harmony','electric bike harmony','e bicycle hrmny','electric bicycle harmony','ebike hrmony','e bike hrmony','e-bike hrmony','e-bike hrnmy','e bike hrmni','ebike hrmni','e-bike hrmni','electric bike hrmni','ebike hrnmy','e bike hrnmy','electric bike hrnmy','e bike harmny','electric bike harmny','e bike hrmoni']
+            'Narcotics': ['drugs','drug possession','heroin','smack','dope','junk','brown','skag','gear','fentanyl','china white','apache','dance fever','friend','carfentanil','drop dead','serial killer','opium','black stuff','big o','midnight oil','dream stick','oxycodone','oxy','oxycontin','percs','blue','hillbilly heroin','hydrocodone','vikes','norco','hydros','morphine','miss emma','white stuff','codeine','cody','lean','purple drank','sizzurp','methadone','fizzies','amidone','chocolate chip cookies','cocaine','coke','blow','snow','nose candy','flake','white girl','crack cocaine','crack','rock','base','methamphetamine','meth','crystal meth','ice','glass','crank','tweak','amphetamines','bennies','black beauties','uppers','speed','mdma','ecstasy','molly','xtc','adam','clarity','benzodiazepines','benzos','xannies','bars','z-bars','nerve pills','barbiturates','reds','blues','yellow jackets','downers','barbs','ghb','gamma hydroxybutyrate','liquid ecstasy','grievous bodily harm','rohypnol','roofies','roaches','ruffies','date rape drug','lsd','acid','tabs','blotter','windowpane','dots','psilocybin mushrooms','shrooms','magic mushrooms','caps','boomers','pcp','angel dust','ozone','sherm','rocket fuel','ketamine','special k','cat valium','kitkat','super acid','dmt','dimethyltryptamine','businessman’s trip','fantasia','marijuana','weed','pot','ganja','grass','herb','mary jane','bud','thc concentrates','dabs','wax','shatter','honey oil','synthetic cannabinoids','spice','black mamba','crazy clown','bath salts','flakka','bloom','cloud nine','vanilla sky','white lightning','synthetic opioids','pink','u-47700','synthetic hallucinogens','n-bomb','smiles','fentanyl analogues','acetylfentanyl','furanylfentanyl','novel psychoactive substances','designer drugs','mephedrone','meow meow','drone','bubbles','synthetic stimulants','plant food','glass cleaner','synthetic hallucinogens','2c-b','2c-i','piperazines','bzp','party pills','kratom','ketum','thang','kakuam','biak-biak','peyote','mescaline','buttons','cactus','inhalants','laughing gas','whippets','poppers','snappers','gabapentin','gabbies','johnnies','pregabalin','lyrica','tramadol','trammies','ultras','clonazepam','klonopin','k-pins'],
+            'Trespassing': ['trespassing','trespass','trespasses','trespassed','trespasser','trespassers','trespassing','unlawful entry','unlawfully entering','illegally entering','illegal entry','intrude','intrudes','intruded','intruding','intrusion','encroach','encroaches','encroached','encroaching','encroachment','breaking and entering','entering unlawfully','unauthorized access','unauthorized entry','invade','invades','invaded','invading','invasion','illegal trespassing','criminal trespassing','illegal entry to property','illegal presence','entering without permission','violating property boundaries','unlawful trespass','illegal trespass','tresspassing','tresspass','trespasssing','trepassing','tresspassing','trespasin','tresspasin','trespasing','tresppassing','trespassers','tresspas','trespas']
         };
+
+        // TODO
+        // const tags = [
+        //     {
+        //         "name": "Crash",
+        //         "color": "#ff0",
+        //         "keywords": []
+        //     }
+        // ]
 
         function detectTags() {
             const inputText = document.getElementById('text-input').value.toLowerCase();
-            const detectedTags = [];
             const outputDiv = document.getElementById("outputDiv");
-            for (const [tag, synonyms] of Object.entries(tags)) {
-                for (const synonym of synonyms) {
-                    if (inputText.includes(synonym)) {
-                        // Add the tag to the result if it matches
-                        if (!detectedTags.includes(tag)) {
-                            detectedTags.push(tag);
-                        }
-                        break;
-                    }
-                    
-                }
-            }
-
+            const resultsDiv = document.getElementById('detected-tags');
+            const detectedTags = [];
             const keywords = [];
+            function containsWholeWord(text, word) {
+                // Escape special characters in the word, if any
+                const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                // Create a regex to match the whole word
+                const regex = new RegExp(`\\b${escapedWord}\\b`, 'i'); // 'i' makes it case-insensitive
+                return regex.test(text);
+            }
             for (const [tag, synonyms] of Object.entries(tags)) {
                 for (const synonym of synonyms) {
-                    if (inputText.includes(synonym)) {
+                    if (containsWholeWord(inputText, synonym)) {
+                        if (!detectedTags.includes(tag)) {
+                            detectedTags.push(tag)
+                        }
                         if (!keywords.includes(synonym)) {
                             keywords.push(synonym)
                         }
                     }
                 }
             }
-
-            // Display the detected tags
-            const resultsDiv = document.getElementById('detected-tags');
-            if (detectedTags.length > 0) {
-                resultsDiv.innerHTML = detectedTags.map(tag => `<span class="tag">${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`).join('');
-            } else {
-                resultsDiv.innerHTML = '<span>No matching tags found.</span>';
-            }
-
             const escapeHTML = (str) =>
                 str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
             const highlightKeywords = (text) => {
-                const regex = new RegExp(`\\b(${keywords.join("|")})\\b`, "gi"); // Match whole words, case insensitive
+                const regex = new RegExp(`(?<!\\w)(${keywords.join("|")})(?!\\w)`, "gi"); // Match whole words, case insensitive
                 return text.replace(regex, (match) => `<span class="highlight">${match}</span>`);
             };
             const textWithLineBreaks = inputText.replace(/\n/g, '<br>');
             const highlightedText = highlightKeywords(textWithLineBreaks);
             outputDiv.innerHTML = highlightedText;
-            console.log(keywords)
+
+            const boxHeight = outputDiv.clientHeight; // Get container height
+            document.getElementById('text-input').style.height = `${boxHeight}px`;
+            document.getElementById('textbox').style.height = `${boxHeight}px`;
+
+            if (detectedTags.length > 0) {
+                resultsDiv.innerHTML = detectedTags.map(tag => `<span class="tag">${tag.charAt(0).toUpperCase() + tag.slice(1)}</span>`).join('');
+            } else {
+                resultsDiv.innerHTML = '<span>No matching tags found.</span>';
+            }
         }
         document.getElementById('text-input').addEventListener('input', detectTags);
     </script>
