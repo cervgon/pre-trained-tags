@@ -88,6 +88,16 @@
             text-align: justify;
             text-justify: inter-word;
         }
+        #actions{
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+        #startBtn{
+            padding: 4px 10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -97,6 +107,7 @@
         <div id="textbox">
             <textarea autofocus id="text-input" rows="10" cols="30" placeholder="Type something here..."></textarea>
             <div class="output" id="outputDiv"></div>
+           <div id="actions"><button id="startBtn">Dictate</button></div>
         </div>
         <p class="label">DETECTED TAGS</p>
         <div id="detected-tags" class="results">...</div>
@@ -121,7 +132,7 @@
             'Crash': ['crash','crashed','crashing','collision','collided','colliding','wreck','wrecked','wrecking','smash','smashed','smashing','impact','impacted','impacting','pileup','piled up','piling up','fender bender','fender benders','hit','hitting','bumped','bumping','slam','slammed','slamming','bang','banged','prang','pranged','pranging','mishap','mishaps','tangle','tangled','tangling','crush','crushed','crushing','shunt','shunted','shunting','crassh','crashedh','crashingh','collison','colided','collidng','creash','crasshing','chrash','crass','carsh','craash','crrash','crasj','crsh','crsssh','chrashed','accident'],
             'E-bike': ['e-bike','electric bike','ebike','e bicycle','electric bicycle','pedal-assist bike','pedelec','electric scooter','motorized bike','motor-assisted bicycle','power bike','battery bike','electric two-wheeler','e-scooter','eletric bike','e-bicke','ebik','e-bick','electric bycicle','elctric bike','e-bicyle','electrik bike','e-bik','hrmny'],
             'Gun Possession': ['gun possession','firearm possession','weapon possession','armed possession','illegal possession of a firearm','illegal gun possession','unlawful firearm possession','carrying a weapon','carrying a firearm','unlawful possession of a weapon','possession of a firearm','possession of a weapon','carrying a gun','firearm ownership','gun ownership','illegal carrying of a firearm','unregistered firearm possession','weapon carrying','firearm carry','possessing a gun','posessing a firearm','gun posession','firearm posession','weapon posession','gun possesion','possesion of a firearm','posessing a weapon','gun possesion charge','posess a gun'],
-            'Narcotics': ['drugs','drug possession','heroin','smack','dope','junk','brown','skag','fentanyl','china white','apache','dance fever','carfentanil','drop dead','opium','black stuff','big o','midnight oil','dream stick','oxycodone','oxy','oxycontin','percs','blue','hillbilly heroin','hydrocodone','vikes','norco','hydros','morphine','miss emma','white stuff','codeine','cody','lean','purple drank','sizzurp','methadone','fizzies','amidone','chocolate chip cookies','cocaine','coke','blow','snow','nose candy','flake','white girl','crack cocaine','crack','rock','base','methamphetamine','meth','crystal meth','ice','glass','crank','tweak','amphetamines','bennies','black beauties','uppers','speed','mdma','ecstasy','molly','xtc','adam','clarity','benzodiazepines','benzos','xannies','bars','z-bars','nerve pills','barbiturates','reds','blues','yellow jackets','downers','barbs','ghb','gamma hydroxybutyrate','liquid ecstasy','grievous bodily harm','rohypnol','roofies','roaches','ruffies','date rape drug','lsd','acid','tabs','blotter','windowpane','dots','psilocybin mushrooms','shrooms','magic mushrooms','caps','boomers','pcp','angel dust','ozone','sherm','rocket fuel','ketamine','special k','cat valium','kitkat','super acid','dmt','dimethyltryptamine','businessman’s trip','fantasia','marijuana','weed','pot','ganja','grass','herb','mary jane','bud','thc concentrates','dabs','wax','shatter','honey oil','synthetic cannabinoids','spice','black mamba','crazy clown','bath salts','flakka','bloom','cloud nine','vanilla sky','white lightning','synthetic opioids','pink','u-47700','synthetic hallucinogens','n-bomb','smiles','fentanyl analogues','acetylfentanyl','furanylfentanyl','novel psychoactive substances','designer drugs','mephedrone','meow meow','drone','bubbles','synthetic stimulants','plant food','glass cleaner','synthetic hallucinogens','2c-b','2c-i','piperazines','bzp','party pills','kratom','ketum','thang','kakuam','biak-biak','peyote','mescaline','buttons','cactus','inhalants','laughing gas','whippets','poppers','snappers','gabapentin','gabbies','johnnies','pregabalin','lyrica','tramadol','trammies','ultras','clonazepam','klonopin','k-pins'],
+            'Narcotics': ['drugs','drug possession','heroin','smack','dope','junk','skag','fentanyl','china white','apache','dance fever','carfentanil','drop dead','opium','black stuff','big o','midnight oil','dream stick','oxycodone','oxy','oxycontin','percs','hillbilly heroin','hydrocodone','vikes','norco','hydros','morphine','miss emma','white stuff','codeine','cody','lean','purple drank','sizzurp','methadone','fizzies','amidone','chocolate chip cookies','cocaine','coke','blow','snow','nose candy','flake','white girl','crack cocaine','crack','rock','base','methamphetamine','meth','crystal meth','ice','glass','crank','tweak','amphetamines','bennies','black beauties','uppers','speed','mdma','ecstasy','molly','xtc','adam','clarity','benzodiazepines','benzos','xannies','z-bars','nerve pills','barbiturates','yellow jackets','downers','barbs','ghb','gamma hydroxybutyrate','liquid ecstasy','grievous bodily harm','rohypnol','roofies','roaches','ruffies','date rape drug','lsd','acid','tabs','blotter','windowpane','dots','psilocybin mushrooms','shrooms','magic mushrooms','caps','boomers','pcp','angel dust','ozone','sherm','rocket fuel','ketamine','special k','cat valium','kitkat','super acid','dmt','dimethyltryptamine','businessman’s trip','fantasia','marijuana','weed','pot','ganja','grass','herb','mary jane','thc concentrates','dabs','wax','shatter','honey oil','synthetic cannabinoids','black mamba','crazy clown','bath salts','flakka','bloom','cloud nine','vanilla sky','white lightning','synthetic opioids','u-47700','synthetic hallucinogens','n-bomb','smiles','fentanyl analogues','acetylfentanyl','furanylfentanyl','novel psychoactive substances','designer drugs','mephedrone','meow meow','drone','bubbles','synthetic stimulants','plant food','glass cleaner','synthetic hallucinogens','2c-b','2c-i','piperazines','bzp','party pills','kratom','ketum','thang','kakuam','biak-biak','peyote','mescaline','buttons','cactus','inhalants','laughing gas','whippets','poppers','snappers','gabapentin','gabbies','johnnies','pregabalin','lyrica','tramadol','trammies','ultras','clonazepam','klonopin','k-pins','drug paraphernalia'],
             'Trespassing': ['trespassing','trespass','trespasses','trespassed','trespasser','trespassers','trespassing','unlawful entry','unlawfully entering','illegally entering','illegal entry','intrude','intrudes','intruded','intruding','intrusion','encroach','encroaches','encroached','encroaching','encroachment','breaking and entering','entering unlawfully','unauthorized access','unauthorized entry','invade','invades','invaded','invading','invasion','illegal trespassing','criminal trespassing','illegal entry to property','illegal presence','entering without permission','violating property boundaries','unlawful trespass','illegal trespass','tresspassing','tresspass','trespasssing','trepassing','tresspassing','trespasin','tresspasin','trespasing','tresppassing','trespassers','tresspas','trespas','broke the lock']
         };
 
@@ -135,6 +146,7 @@
         // ]
 
         function detectTags() {
+            console.log("Detecting Tags..")
             const inputText = document.getElementById('text-input').value.toLowerCase();
             const outputDiv = document.getElementById("outputDiv");
             const resultsDiv = document.getElementById('detected-tags');
@@ -181,6 +193,58 @@
             }
         }
         document.getElementById('text-input').addEventListener('input', detectTags);
+
+
+
+        const startBtn = document.getElementById('startBtn');
+        const textOutput = document.getElementById('text-input');
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            alert("Your browser does not support Speech Recognition. Please use Google Chrome.");
+        } else {
+            const recognition = new SpeechRecognition();
+
+            let isListening = false;
+            let silenceTimer;
+
+            recognition.continuous = true;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0].transcript)
+                    .join('');
+                textOutput.value += transcript + ' ';
+
+                clearTimeout(silenceTimer);
+                silenceTimer = setTimeout(() => {
+                    recognition.stop();
+                    isListening = false;
+                    startBtn.textContent = 'Dictate';
+                }, 200);
+            };
+
+            recognition.onend = () => {
+                if (isListening) recognition.start();
+                detectTags();
+            };
+
+            startBtn.addEventListener('click', () => {
+                if (!isListening) {
+                    recognition.start();
+                    isListening = true;
+                    startBtn.textContent = 'Listening...';
+                } else {
+                    recognition.stop();
+                    isListening = false;
+                    startBtn.textContent = 'Start Listening';
+                    
+                }
+            });
+        }
     </script>
 </body>
 </html>
