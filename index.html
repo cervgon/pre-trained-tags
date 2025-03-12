@@ -5,7 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
 
-    <title>FI Narrative POC</title>
+    <title>Smart Tags POC</title>
+
+
+    <meta name="keywords" content="">
+    <meta name="description" content="From text to tags">
+    <meta name="author" content="Gonzalo Cervantes">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="shortcut" href="favicon.png">    
+    <link rel="apple-touch-icon" href="favicon-57.png" sizes="57x57">   
+    <link rel="apple-touch-icon" href="favicon-72.png" sizes="72x72">   
+    <link rel="apple-touch-icon" href="favicon-76.png" sizes="76x76">   
+    <link rel="apple-touch-icon" href="favicon-114.png" sizes="114x114">    
+    <link rel="apple-touch-icon" href="favicon-120.png" sizes="120x120">    
+    <link rel="apple-touch-icon" href="favicon-144.png" sizes="144x144">    
+    <link rel="apple-touch-icon" href="favicon-152.png" sizes="152x152">    
+    <link rel="apple-touch-icon" href="favicon-180.png" sizes="180x180">    
+    <link rel="mask-icon" href="icon.svg" color="#333">   
+    <meta name="apple-mobile-web-app-status-bar-style" content="red">   
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz/|?%1234567890" rel="stylesheet">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
     <style>
         body {
         font-family: Roboto, sans-serif;
@@ -33,7 +58,7 @@
             color: gray;
         }
         .highlight{
-            background-color: #3b0df21c;
+            background-color: #0066ff1c;
             /* border-bottom: 2px solid #0D69F2; */
         }
         .container{
@@ -102,7 +127,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>FI Narrative Demo</h1>
+        <h1>Smart Tags POC</h1>
     
         <div id="textbox">
             <textarea autofocus id="text-input" rows="10" cols="30" placeholder="Type something here..."></textarea>
@@ -113,13 +138,7 @@
         <div id="detected-tags" class="results">...</div>
         <br>    
         <p class="label">PRE-TRAINED TAGS AVAILABLE</p>
-        <div class="tags">
-            <span class="tag">Crash</span>
-            <span class="tag">E-bike</span>
-            <span class="tag">Gun Possession</span>
-            <span class="tag">Narcotics</span>
-            <span class="tag">Trespassing</span>
-        </div>
+        <div class="tags" id="pre-trained_tags"></div>
         <p class="label">EXAMPLE</p>
         <p class="example">
             <i>At 10:45 PM, officers responded to a <span class="highlight">wreck</span> near Elm Street and Maple Avenue. A disoriented male suspect was found next to an overturned <span class="highlight">electric scooter</span>. Nearby, signs of a break-in were discovered, and surveillance footage linked the suspect to the crime. A search of his backpack revealed a firearm and <span class="highlight">methamphetamine</span>. He was arrested for <span class="highlight">unlawful firearm possession</span>, <span class="highlight">drug possession</span>, and <span class="highlight">breaking and entering</span>. The suspect was transported for questioning, and the case remains under investigation.</i>
@@ -129,11 +148,21 @@
     <script>
         // Define a list of synonyms for each tag
         const tags = {
+            'Drone Located': [  'drone spotted',  'uav located',  'unmanned aerial vehicle in sight',  'drones found',  'reconnaissance aircraft spotted',  'piloted remotely',  'airborne unit spotted',  'rpa (recreational pilot aircraft) located',  'sua (small unmanned aircraft) detected',  'uas (unmanned aerial system) in position',  'surveillance aircraft identified',  'pilotless aircraft seen',  'fixed-wing aircraft on site',  'drone airdrome established',  'air surveillance unit spotted',  'rpa sighting confirmed',  'uav identified',  'drones at scene'],
+            'DUI': [ 'DUI', 'driving under the influence', 'dwi', 'dwi charge', 'over the limit', 'dui charge', 'alcohol impairment', 'drunk driving offense', 'dwai', 'drugged driving offense', 'under the influence', 'oui', 'drug-impaired driving', 'impaired driving', 'dui arrest', 'dwi arrest', 'refusal to take dwti test', 'refusal to submit to dwi test', 'breathalyzer test failure', 'blood test result', 'blood alcohol content', 'bac above limit', 'super drinker', 'drunk driving', 'dui conviction', 'dwai conviction', 'impaired driving conviction', 'oui conviction'],
             'Crash': ['crash','crashed','crashing','collision','collided','colliding','wreck','wrecked','wrecking','smash','smashed','smashing','impact','impacted','impacting','pileup','piled up','piling up','fender bender','fender benders','hit','hitting','bumped','bumping','slam','slammed','slamming','bang','banged','prang','pranged','pranging','mishap','mishaps','tangle','tangled','tangling','crush','crushed','crushing','shunt','shunted','shunting','crassh','crashedh','crashingh','collison','colided','collidng','creash','crasshing','chrash','crass','carsh','craash','crrash','crasj','crsh','crsssh','chrashed','accident'],
             'E-bike': ['e-bike','electric bike','ebike','e bicycle','electric bicycle','pedal-assist bike','pedelec','electric scooter','motorized bike','motor-assisted bicycle','power bike','battery bike','electric two-wheeler','e-scooter','eletric bike','e-bicke','ebik','e-bick','electric bycicle','elctric bike','e-bicyle','electrik bike','e-bik','hrmny'],
+            'Fentanyl': [ 'fentanyl', 'fent', 'fentanyl citrate', 'fentanyl patch', 'fentanyl lollipop', 'fenta', 'fetty', 'china white', 'china girl', 'apache', 'tango and cash', 'dance fever', 'jackpot', 'poison', 'drop dead', 'fake oxy', 'blue m30', 'pressed pill', 'synthetic opioid', 'opioid', 'illicit fentanyl', 'fent powder', 'powdered fentanyl', 'laced heroin', 'laced cocaine', 'carfentanil', 'carfent', 'elephant tranquilizer', 'rainbow fentanyl', 'transdermal fentanyl', 'pharmaceutical fentanyl', 'counterfeit pill', 'street fent', 'fentanyl analog', 'gray death', 'murder 8', 'killer dope', 'china town', 'china red', 'fake perc', 'fake perk', 'fake roxy', 'fake blues', 'fentyl', 'fentynal', 'fentanil', 'fentnall', 'fentinal', 'fentanol', 'fentynyl'],
             'Gun Possession': ['gun possession','firearm possession','weapon possession','armed possession','illegal possession of a firearm','illegal gun possession','unlawful firearm possession','carrying a weapon','carrying a firearm','unlawful possession of a weapon','possession of a firearm','possession of a weapon','carrying a gun','firearm ownership','gun ownership','illegal carrying of a firearm','unregistered firearm possession','weapon carrying','firearm carry','possessing a gun','posessing a firearm','gun posession','firearm posession','weapon posession','gun possesion','possesion of a firearm','posessing a weapon','gun possesion charge','posess a gun'],
+            'LPR Located': [ 'lpr located', 'lpr confirmed', 'lpr identified', 'lpr spotted', 'lpr observed', 'lpr registered', 'lpr tracked', 'lpr situated', 'lpr found', 'lpr discovered', 'vhr (vehicle history report) located', 'vid (video identification) confirmed', 'vid identified', 'vid spotted', 'vid on scene', 'vehicle info confirmed', 'vehicle location confirmed', 'location verified', 'vehicle confirmed', 'lpr status confirmed', ' vehicle information confirmed', 'vehicl location confirmed'],
+            'Mental Health Grant': ['mental health','psychological well-being','emotional distress','mind state','brain function','cognitive status','psychic condition','mental status','neuropsychological status','emotional stability','psychological fitness','thought patterns','mood swings','mental fitness','psychiatric condition','psycho emotional state','brain chemistry','cognitive function','psychological distress','mind set','mood disorders','emotional issues','psychic problems','neuropsychiatric status','mental well-being','psychological condition','thoughts and feelings','mental status report','psych evaluation'],
+            'Residential Burglaries': ['residential break-ins', 'home invasions', 'dwellings burglary', 'house burglaries', 'domestic thefts', 'residential robberies', 'inhabited property crimes', 'family home burglaries', 'home safes', 'burglarized residences', 'lived-in break-ins', 'domiciliary burglaries', 'single-family home thefts', 'property break-ins', 'residential robbery', 'home invasion robberies', 'dwelling burglary', 'family home break-ins', 'inhabited property crimes'],
+            'RTCC Alert - License Plate Hit': ['rtcc alert - license plate hit','plate hit','license plate match','plate match','vehicle info hit','vih','driver\'s license hit','dl match','driver information match','dirmatch','vehicle identifier confirmed','vic','plate confirmation','lic plate hit','motor vehicle alert','mva','driver\'s license verification','dl verification','driver info confirmed','lic verification','plate confirmation number'],
+            'RTCC Surveillance Assist': ['rtcc surveillance assist','real-time computer-aided communication surveillance support','police report computer assistance','dispatch surveillance aid','radio transmitter computer control surveillance','rtcc support','surveillance reporting tool for crime control','public safety dispatch assistance','emergency management information system aid','dispatch technical support','police dispatch software assist','computer-assisted reporting and dispatching','rtcc police report assist','crimestoppers surveillance aid','emergency management reporting tool','real-time crime control communication','crime reporting and dispatching system','police dispatch reporting support'],
+            'Traffic Project': ['traffic project','traffic management plan','traffic control measures','traffic regulation scheme','traffic diversion plan','traffic rerouting plan','road traffic management','traffic flow optimization','traffic congestion reduction','highway management plan','traffic study','traffic analysis','traffic investigation','traffic incident response','traffics','traffic movement plan','road traffic management system','traffic monitoring program','traffic enforcement initiative','traffic flow improvement project','traffic safety plan','traffic control strategy','traffic management system','traffic stop'],
             'Narcotics': ['drugs','drug possession','heroin','smack','dope','junk','skag','fentanyl','china white','apache','dance fever','carfentanil','drop dead','opium','black stuff','big o','midnight oil','dream stick','oxycodone','oxy','oxycontin','percs','hillbilly heroin','hydrocodone','vikes','norco','hydros','morphine','miss emma','white stuff','codeine','cody','lean','purple drank','sizzurp','methadone','fizzies','amidone','chocolate chip cookies','cocaine','coke','blow','snow','nose candy','flake','white girl','crack cocaine','crack','rock','base','methamphetamine','meth','crystal meth','ice','glass','crank','tweak','amphetamines','bennies','black beauties','uppers','speed','mdma','ecstasy','molly','xtc','adam','clarity','benzodiazepines','benzos','xannies','z-bars','nerve pills','barbiturates','yellow jackets','downers','barbs','ghb','gamma hydroxybutyrate','liquid ecstasy','grievous bodily harm','rohypnol','roofies','roaches','ruffies','date rape drug','lsd','acid','tabs','blotter','windowpane','dots','psilocybin mushrooms','shrooms','magic mushrooms','caps','boomers','pcp','angel dust','ozone','sherm','rocket fuel','ketamine','special k','cat valium','kitkat','super acid','dmt','dimethyltryptamine','businessman’s trip','fantasia','marijuana','weed','pot','ganja','grass','herb','mary jane','thc concentrates','dabs','wax','shatter','honey oil','synthetic cannabinoids','black mamba','crazy clown','bath salts','flakka','bloom','cloud nine','vanilla sky','white lightning','synthetic opioids','u-47700','synthetic hallucinogens','n-bomb','smiles','fentanyl analogues','acetylfentanyl','furanylfentanyl','novel psychoactive substances','designer drugs','mephedrone','meow meow','drone','bubbles','synthetic stimulants','plant food','glass cleaner','synthetic hallucinogens','2c-b','2c-i','piperazines','bzp','party pills','kratom','ketum','thang','kakuam','biak-biak','peyote','mescaline','buttons','cactus','inhalants','laughing gas','whippets','poppers','snappers','gabapentin','gabbies','johnnies','pregabalin','lyrica','tramadol','trammies','ultras','clonazepam','klonopin','k-pins','drug paraphernalia'],
-            'Trespassing': ['trespassing','trespass','trespasses','trespassed','trespasser','trespassers','trespassing','unlawful entry','unlawfully entering','illegally entering','illegal entry','intrude','intrudes','intruded','intruding','intrusion','encroach','encroaches','encroached','encroaching','encroachment','breaking and entering','entering unlawfully','unauthorized access','unauthorized entry','invade','invades','invaded','invading','invasion','illegal trespassing','criminal trespassing','illegal entry to property','illegal presence','entering without permission','violating property boundaries','unlawful trespass','illegal trespass','tresspassing','tresspass','trespasssing','trepassing','tresspassing','trespasin','tresspasin','trespasing','tresppassing','trespassers','tresspas','trespas','broke the lock']
+            'Trespassing': ['trespassing','trespass','trespasses','trespassed','trespasser','trespassers','trespassing','unlawful entry','unlawfully entering','illegally entering','illegal entry','intrude','intrudes','intruded','intruding','intrusion','encroach','encroaches','encroached','encroaching','encroachment','breaking and entering','entering unlawfully','unauthorized access','unauthorized entry','invade','invades','invaded','invading','invasion','illegal trespassing','criminal trespassing','illegal entry to property','illegal presence','entering without permission','violating property boundaries','unlawful trespass','illegal trespass','tresspassing','tresspass','trespasssing','trepassing','tresspassing','trespasin','tresspasin','trespasing','tresppassing','trespassers','tresspas','trespas','broke the lock'],
+            'Unhoused': ['unhoused','homeless','houseless','without shelter','living on the streets','street person','street dweller','vagrant','drifter','itinerant','roofless','shelterless','without a fixed address','independent living','unaccompanied minor','abandoned','derelict','resident without a residence','individuals experiencing homelessness']
         };
 
         // TODO
@@ -144,6 +173,15 @@
         //         "keywords": []
         //     }
         // ]
+
+
+        const outputDiv = document.getElementById("pre-trained_tags");
+        Object.keys(tags).forEach(key => {
+            const keyDiv = document.createElement("div");
+            keyDiv.className = "tag"; // Assign class
+            keyDiv.textContent = key; // Insert key text
+            outputDiv.appendChild(keyDiv); // Append to main div
+        });
 
         function detectTags() {
             console.log("Detecting Tags..")
