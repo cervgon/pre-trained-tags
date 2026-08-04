@@ -3,26 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Tags AI - Intelligent Text Analysis</title>
+    <title>Semantic Auto-Tagging Sandbox by SmartForce®</title>
     
-    <meta name="keywords" content="">
     <meta name="description" content="From text to tags">
     <meta name="author" content="Gonzalo Cervantes">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="shortcut" href="../favicon.png">    
-    <link rel="apple-touch-icon" href="../favicon-57.png" sizes="57x57">   
-    <link rel="apple-touch-icon" href="../favicon-72.png" sizes="72x72">   
-    <link rel="apple-touch-icon" href="../favicon-76.png" sizes="76x76">   
-    <link rel="apple-touch-icon" href="../favicon-114.png" sizes="114x114">    
-    <link rel="apple-touch-icon" href="../favicon-120.png" sizes="120x120">    
-    <link rel="apple-touch-icon" href="../favicon-144.png" sizes="144x144">    
-    <link rel="apple-touch-icon" href="../favicon-152.png" sizes="152x152">    
-    <link rel="apple-touch-icon" href="../favicon-180.png" sizes="180x180">    
-    <link rel="mask-icon" href="../icon.svg" color="#333">   
+    <link rel="shortcut icon" href="favicon.png">    
+    <link rel="apple-touch-icon" href="favicon-57.png" sizes="57x57">   
+    <link rel="apple-touch-icon" href="favicon-72.png" sizes="72x72">   
+    <link rel="apple-touch-icon" href="favicon-76.png" sizes="76x76">   
+    <link rel="apple-touch-icon" href="favicon-114.png" sizes="114x114">    
+    <link rel="apple-touch-icon" href="favicon-120.png" sizes="120x120">    
+    <link rel="apple-touch-icon" href="favicon-144.png" sizes="144x144">    
+    <link rel="apple-touch-icon" href="favicon-152.png" sizes="152x152">    
+    <link rel="apple-touch-icon" href="favicon-180.png" sizes="180x180">    
+    <link rel="mask-icon" href="icon.svg" color="#333">   
     <meta name="apple-mobile-web-app-status-bar-style" content="red">   
-    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -80,13 +77,7 @@
             -webkit-backdrop-filter: blur(10px);
         }
 
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-        @keyframes floating {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
+
     </style>
 </head>
 <body class="bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 min-h-screen font-sans antialiased">
@@ -111,7 +102,7 @@
                     </span>
                 </div> -->
                 <h1 class="text-1xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-purple-600">
-                    Semantic Auto Tagging Sandbox
+                    Semantic Auto-Tagging Sandbox
                 </h1>
                 <!-- <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
                     Instantly analyze text and automatically detect relevant tags using advanced pattern recognition
@@ -379,12 +370,31 @@
         
         document.getElementById('availableTagCount').textContent = Object.keys(tags).length;
 
+        // Constants
+        const SILENCE_TIMEOUT_MS = 2000;
+
+        // Utility function to escape HTML and prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
         // Detect tags function
         function detectTags() {
-            const inputText = document.getElementById('text-input').value.toLowerCase();
+            const textInput = document.getElementById('text-input');
             const outputDiv = document.getElementById('outputDiv');
             const resultsDiv = document.getElementById('detected-tags');
             const tagCounter = document.getElementById('tagCounter');
+            const charCount = document.getElementById('charCount');
+            
+            // Null checks
+            if (!textInput || !outputDiv || !resultsDiv || !tagCounter || !charCount) {
+                console.error('Required DOM elements not found');
+                return;
+            }
+
+            const inputText = textInput.value.toLowerCase();
             const detectedTags = [];
             const keywords = [];
 
@@ -408,26 +418,39 @@
             }
 
             const highlightKeywords = (text) => {
-                if (keywords.length === 0) return text;
-                const regex = new RegExp(`(?<!\\w)(${keywords.join('|')})(?!\\w)`, 'gi');
-                return text.replace(regex, (match) => `<span class="bg-yellow-200 text-yellow-900 rounded font-semibold">${match}</span>`);
+                if (keywords.length === 0) return escapeHtml(text);
+                
+                // Escape all keywords for safe regex usage
+                const escapedKeywords = keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+                
+                // Try to use negative lookbehind if supported, fallback to word boundary
+                let regex;
+                try {
+                    regex = new RegExp(`(?<!\\w)(${escapedKeywords.join('|')})(?!\\w)`, 'gi');
+                } catch (e) {
+                    // Fallback for older browsers that don't support lookbehind
+                    regex = new RegExp(`\\b(${escapedKeywords.join('|')})\\b`, 'gi');
+                }
+                
+                return escapeHtml(text).replace(regex, (match) => `<span class="bg-yellow-200 text-yellow-900 rounded font-semibold">${match}</span>`);
             };
 
-            const textWithLineBreaks = inputText.replace(/\n/g, '<br>');
+            const textWithLineBreaks = inputText.replace(/\n/g, '\n');
             const highlightedText = highlightKeywords(textWithLineBreaks);
-            outputDiv.innerHTML = highlightedText;
+            outputDiv.innerHTML = highlightedText.replace(/\n/g, '<br>');
 
             // Update character count
-            document.getElementById('charCount').textContent = `${inputText.length} characters`;
+            charCount.textContent = `${inputText.length} characters`;
 
             if (detectedTags.length > 0) {
                 resultsDiv.innerHTML = detectedTags.map(tag => {
-                    const colorClass = tagColorMap[tag];
+                    const colorClass = tagColorMap[tag] || 'bg-gray-100 text-gray-800 border-gray-300';
+                    const escapedTag = escapeHtml(tag);
                     return `<div class="flex items-center px-4 py-3 rounded-lg border-2 ${colorClass} transition-all duration-200 transform hover:scale-102 shadow-md">
                         <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                         </svg>
-                        <span class="text-sm font-semibold">${tag}</span>
+                        <span class="text-sm font-semibold">${escapedTag}</span>
                     </div>`;
                 }).join('');
                 tagCounter.textContent = `${detectedTags.length}`;
@@ -439,22 +462,33 @@
             }
         }
 
-        document.getElementById('text-input').addEventListener('input', detectTags);
+        const textInputElement = document.getElementById('text-input');
+        if (textInputElement) {
+            textInputElement.addEventListener('input', detectTags);
+        }
 
         // Sync scroll between textarea and outputDiv
-        const textInput = document.getElementById('text-input');
-        const outputDiv = document.getElementById('outputDiv');
+        const textInputForScroll = document.getElementById('text-input');
+        const outputDivForScroll = document.getElementById('outputDiv');
         
-        textInput.addEventListener('scroll', () => {
-            outputDiv.scrollTop = textInput.scrollTop;
-            outputDiv.scrollLeft = textInput.scrollLeft;
-        });
+        if (textInputForScroll && outputDivForScroll) {
+            textInputForScroll.addEventListener('scroll', () => {
+                outputDivForScroll.scrollTop = textInputForScroll.scrollTop;
+                outputDivForScroll.scrollLeft = textInputForScroll.scrollLeft;
+            });
+        }
 
         // Clear button
-        document.getElementById('clearBtn').addEventListener('click', () => {
-            document.getElementById('text-input').value = '';
-            detectTags();
-        });
+        const clearBtn = document.getElementById('clearBtn');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                const textInput = document.getElementById('text-input');
+                if (textInput) {
+                    textInput.value = '';
+                    detectTags();
+                }
+            });
+        }
 
         // Example texts
         const examples = {
@@ -476,9 +510,12 @@
             button.addEventListener('click', (e) => {
                 const exampleNum = e.target.getAttribute('data-example');
                 const exampleText = examples[exampleNum];
-                document.getElementById('text-input').value = exampleText;
-                detectTags();
-                document.getElementById('text-input').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const textInput = document.getElementById('text-input');
+                if (textInput && exampleText) {
+                    textInput.value = exampleText;
+                    detectTags();
+                    textInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             });
         });
 
@@ -488,21 +525,28 @@
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-        if (SpeechRecognition) {
+        if (SpeechRecognition && startBtn && textOutput) {
             // Show the button only if speech recognition is supported
             startBtn.classList.remove('hidden');
             const recognition = new SpeechRecognition();
             let isListening = false;
-            let silenceTimer;
+            let silenceTimer = null;
 
             recognition.continuous = true;
             recognition.interimResults = false;
             recognition.lang = 'en-US';
 
             function stopDictation() {
-                recognition.stop();
+                try {
+                    recognition.stop();
+                } catch (e) {
+                    console.error('Error stopping recognition:', e);
+                }
                 isListening = false;
-                clearTimeout(silenceTimer);
+                if (silenceTimer) {
+                    clearTimeout(silenceTimer);
+                    silenceTimer = null;
+                }
                 startBtn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/></svg>Dictate';
                 startBtn.className = 'inline-flex items-center px-6 py-3 ml-4 bg-gradient-to-r from-primary-500 to-purple-600 text-white font-semibold rounded-lg hover:from-primary-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transform hover:scale-105 transition-all duration-200 shadow-lg';
             }
@@ -514,10 +558,12 @@
                 textOutput.value += transcript + ' ';
                 detectTags();
 
-                clearTimeout(silenceTimer);
+                if (silenceTimer) {
+                    clearTimeout(silenceTimer);
+                }
                 silenceTimer = setTimeout(() => {
                     stopDictation();
-                }, 2000);
+                }, SILENCE_TIMEOUT_MS);
             };
 
             recognition.onend = () => {
@@ -535,6 +581,10 @@
                 console.error('Speech recognition error:', event.error);
                 if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
                     alert('Microphone access denied. Please allow microphone access in your browser settings.');
+                } else if (event.error === 'no-speech') {
+                    // Don't show error for no-speech, just continue
+                    console.log('No speech detected, continuing...');
+                    return;
                 }
                 stopDictation();
             };
@@ -545,7 +595,7 @@
                         recognition.start();
                         isListening = true;
                         startBtn.innerHTML = '<svg class="w-5 h-5 mr-2 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/></svg>Stop';
-                        startBtn.className = 'inline-flex items-center px-6 py-3 ml-2 bg-gradient-to-r from-red-600 to-pink-600 text-white font-semibold rounded-lg hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transform hover:scale-105 transition-all duration-200 shadow-lg';
+                        startBtn.className = 'inline-flex items-center px-6 py-3 ml-4 bg-gradient-to-r from-red-600 to-pink-600 text-white font-semibold rounded-lg hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transform hover:scale-105 transition-all duration-200 shadow-lg';
                     } catch (e) {
                         console.error('Failed to start recognition:', e);
                         alert('Failed to start speech recognition. Error: ' + e.message);
