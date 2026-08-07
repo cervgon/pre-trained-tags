@@ -432,7 +432,7 @@
                     regex = new RegExp(`\\b(${escapedKeywords.join('|')})\\b`, 'gi');
                 }
                 
-                return escapeHtml(text).replace(regex, (match) => `<span class="bg-yellow-200 text-yellow-900 rounded font-semibold">${match}</span>`);
+                return escapeHtml(text).replace(regex, (match) => `<span class="bg-blue-200 text-blue-900 rounded font-semibold">${match}</span>`);
             };
 
             const textWithLineBreaks = inputText.replace(/\n/g, '\n');
@@ -454,7 +454,7 @@
                     </div>`;
                 }).join('');
                 tagCounter.textContent = `${detectedTags.length}`;
-                tagCounter.className = 'px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold animate-pulse-slow';
+                tagCounter.className = 'px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold animate-pulse-slow';
             } else {
                 resultsDiv.innerHTML = '<div class="text-gray-400 text-sm italic text-center py-8">Start typing to see detected tags...</div>';
                 tagCounter.textContent = '0';
@@ -491,28 +491,41 @@
         }
 
         // Example texts
-        const examples = {
-            1: "At 10:45 PM, officers responded to a wreck near Elm Street and Maple Avenue. A disoriented male suspect was found next to an overturned electric scooter. Nearby, signs of a break-in were discovered, and surveillance footage linked the suspect to the crime. A search of his backpack revealed a firearm and methamphetamine. He was arrested for unlawful firearm possession, drug possession, and breaking and entering. The suspect was transported for questioning, and the case remains under investigation.",
-            
-            2: "Officers initiated a traffic stop at the intersection of Main Street and Highway 101 at approximately 2:30 AM. The driver exhibited signs of impairment and failed a field sobriety test. A breathalyzer test confirmed the driver was driving under the influence with a blood alcohol content above the legal limit. The driver was arrested for DUI and the vehicle was towed. A traffic project team documented the incident for future enforcement initiatives.",
-            
-            3: "Homeowners reported a residential break-in at their residence on 456 Oak Avenue. Multiple items were stolen including electronics, jewelry, and cash. Surveillance footage captured an unhoused individual breaking and entering through the rear door. Officers discovered evidence of trespassing on neighboring properties. The case is being investigated as part of a series of residential burglaries in the area.",
-            
-            4: "RTCC surveillance assist identified a drone spotted flying over restricted airspace near the downtown area. The unmanned aerial vehicle was tracked and located near the city park. Officers responded to the scene and the drone was found abandoned. The UAV was registered to a local resident who claimed it malfunctioned. A report was filed documenting the drone located incident.",
-            
-            5: "Officers responded to a call at 1200 Pine Street regarding an individual experiencing emotional distress and psychological well-being concerns. The subject was exhibiting signs of a mental health crisis including mood swings and cognitive function issues. Mental health grant resources were contacted and a crisis intervention team arrived. The individual received psychiatric evaluation and was transported to a medical facility for further mental status assessment.",
-            
-            6: "RTCC alert - license plate hit confirmed on a vehicle traveling southbound on Interstate 5. The plate match indicated the vehicle was reported stolen from Portland last week. Officers initiated pursuit and successfully conducted a traffic stop. The driver was arrested for vehicle theft. Real-time crime control communication enabled rapid response and vehicle recovery. The case demonstrates effective RTCC surveillance assist capabilities."
-        };
+        const examples = [
+            {
+                "title": "Crime Report",
+                "value": "At 10:45 PM, officers responded to a wreck near Elm Street and Maple Avenue. A disoriented male suspect was found next to an overturned electric scooter. Nearby, signs of a break-in were discovered, and surveillance footage linked the suspect to the crime. A search of his backpack revealed a firearm and methamphetamine. He was arrested for unlawful firearm possession, drug possession, and breaking and entering. The suspect was transported for questioning, and the case remains under investigation."
+            },
+            {
+                "title": "Traffic Incident",
+                "value": "Officers initiated a traffic stop at the intersection of Main Street and Highway 101 at approximately 2:30 AM. The driver exhibited signs of impairment and failed a field sobriety test. A breathalyzer test confirmed the driver was driving under the influence with a blood alcohol content above the legal limit. The driver was arrested for DUI and the vehicle was towed. A traffic project team documented the incident for future enforcement initiatives."
+            },
+            {
+                "title": "Residential Burglary",
+                "value": "Homeowners reported a residential break-in at their residence on 456 Oak Avenue. Multiple items were stolen including electronics, jewelry, and cash. Surveillance footage captured an unhoused individual breaking and entering through the rear door. Officers discovered evidence of trespassing on neighboring properties. The case is being investigated as part of a series of residential burglaries in the area."
+            },
+            {
+                "title": "Drone Surveillance",
+                "value": "RTCC surveillance assist identified a drone spotted flying over restricted airspace near the downtown area. The unmanned aerial vehicle was tracked and located near the city park. Officers responded to the scene and the drone was found abandoned. The UAV was registered to a local resident who claimed it malfunctioned. A report was filed documenting the drone located incident."
+            },
+            {
+                "title": "Mental Health Crisis",
+                "value": "Officers responded to a call at 1200 Pine Street regarding an individual experiencing emotional distress and psychological well-being concerns. The subject was exhibiting signs of a mental health crisis including mood swings and cognitive function issues. Mental health grant resources were contacted and a crisis intervention team arrived. The individual received psychiatric evaluation and was transported to a medical facility for further mental status assessment."
+            },
+            {
+                "title": "License Plate Hit",
+                "value": "RTCC alert - license plate hit confirmed on a vehicle traveling southbound on Interstate 5. The plate match indicated the vehicle was reported stolen from Portland last week. Officers initiated pursuit and successfully conducted a traffic stop. The driver was arrested for vehicle theft. Real-time crime control communication enabled rapid response and vehicle recovery. The case demonstrates effective RTCC surveillance assist capabilities."
+            }
+        ];
 
         // Load example buttons
         document.querySelectorAll('.load-example-btn').forEach(button => {
             button.addEventListener('click', (e) => {
-                const exampleNum = e.target.getAttribute('data-example');
-                const exampleText = examples[exampleNum];
+                const exampleNum = parseInt(e.target.getAttribute('data-example')) - 1;
+                const example = examples[exampleNum];
                 const textInput = document.getElementById('text-input');
-                if (textInput && exampleText) {
-                    textInput.value = exampleText;
+                if (textInput && example) {
+                    textInput.value = example.value;
                     detectTags();
                     textInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
