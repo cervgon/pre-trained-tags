@@ -80,11 +80,11 @@
 
     </style>
 </head>
-<body class="bg-gradient-to-br from-primary-50 via-purple-50 to-pink-50 min-h-screen font-sans antialiased">
+<body class="min-h-screen font-sans antialiased">
     
     <!-- Hero Section -->
     <div class="relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-purple-600/10"></div>
+        <div class="absolute inset-0 "></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative">
             <div class="text-center animate-slideUp">
                 <!-- <div class="inline-block mb-4">
@@ -126,7 +126,7 @@
                                     autofocus 
                                     id="text-input" 
                                     class="w-full h-full min-h-[500px] max-h-[500px] p-8 text-lg font-mono bg-white/50 border-0 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none transition-all duration-200 overflow-y-auto"
-                                    placeholder="Type or paste your text here to detect tags automatically...&#10;&#10;Try the example below or start dictating!"
+                                    placeholder="Type or paste your text here to detect tags automatically...&#10;&#10;Or try the examples below."
                                 ></textarea>
                                 <div id="outputDiv" class="absolute top-0 left-0 w-full h-full max-h-[500px] p-8 text-lg font-mono pointer-events-none opacity-100 z-10 overflow-y-auto"></div>
                             </div>
@@ -144,7 +144,7 @@
                                             </svg>
                                             Clear
                                         </button>
-                                        <button 
+                                        <!-- <button 
                                             id="startBtn"
                                             class="hidden inline-flex items-center px-6 py-3 ml-4 bg-gradient-to-r from-primary-500 to-purple-600 text-white font-semibold rounded-lg hover:from-primary-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transform hover:scale-105 transition-all duration-200 shadow-lg"
                                         >
@@ -152,7 +152,7 @@
                                                 <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/>
                                             </svg>
                                             Dictate
-                                        </button>
+                                        </button> -->
                                     </div>
                                     <div id="charCount" class="text-sm text-gray-500 font-medium">
                                         0 characters
@@ -172,7 +172,7 @@
                                     <svg class="w-6 h-6 mr-2 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
                                     </svg>
-                                    Tags
+                                    Detected Tags
                                 </h2>
                                 <span id="tagCounter" class="px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-xs font-semibold">
                                     0
@@ -202,96 +202,8 @@
                 </h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Example 1: Crime Report -->
-                <div class="glass-morphism rounded-xl shadow-lg overflow-hidden border border-white/20 hover:shadow-xl transition-shadow duration-200">
-                    <div class="bg-gradient-to-r from-red-50 to-orange-50 px-6 py-3 border-b border-red-200">
-                        <h3 class="font-bold text-gray-800 text-sm">Crime Report</h3>
-                    </div>
-                    <div class="p-6 bg-white">
-                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4">
-                            At 10:45 PM, officers responded to a wreck near Elm Street. A suspect was found next to an electric scooter. A search revealed a firearm and methamphetamine...
-                        </p>
-                        <button data-example="1" class="load-example-btn w-full px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200 shadow-md">
-                            Load Example
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Example 2: Traffic Incident -->
-                <div class="glass-morphism rounded-xl shadow-lg overflow-hidden border border-white/20 hover:shadow-xl transition-shadow duration-200">
-                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 px-6 py-3 border-b border-blue-200">
-                        <h3 class="font-bold text-gray-800 text-sm">Traffic Incident</h3>
-                    </div>
-                    <div class="p-6 bg-white">
-                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4">
-                            Officers initiated a traffic stop at the intersection of Main Street. The driver exhibited signs of impairment and failed a field sobriety test...
-                        </p>
-                        <button data-example="2" class="load-example-btn w-full px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200 shadow-md">
-                            Load Example
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Example 3: Residential Burglary -->
-                <div class="glass-morphism rounded-xl shadow-lg overflow-hidden border border-white/20 hover:shadow-xl transition-shadow duration-200">
-                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-3 border-b border-purple-200">
-                        <h3 class="font-bold text-gray-800 text-sm">Residential Burglary</h3>
-                    </div>
-                    <div class="p-6 bg-white">
-                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4">
-                            Homeowners reported a break-in at their residence on Oak Avenue. Multiple items were stolen including electronics. Surveillance footage captured an unhoused individual...
-                        </p>
-                        <button data-example="3" class="load-example-btn w-full px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200 shadow-md">
-                            Load Example
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Example 4: Drone Surveillance -->
-                <div class="glass-morphism rounded-xl shadow-lg overflow-hidden border border-white/20 hover:shadow-xl transition-shadow duration-200">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-3 border-b border-green-200">
-                        <h3 class="font-bold text-gray-800 text-sm">Drone Surveillance</h3>
-                    </div>
-                    <div class="p-6 bg-white">
-                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4">
-                            RTCC surveillance assist identified a drone spotted flying over restricted airspace. The UAV was tracked and located near the city park...
-                        </p>
-                        <button data-example="4" class="load-example-btn w-full px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200 shadow-md">
-                            Load Example
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Example 5: Mental Health Crisis -->
-                <div class="glass-morphism rounded-xl shadow-lg overflow-hidden border border-white/20 hover:shadow-xl transition-shadow duration-200">
-                    <div class="bg-gradient-to-r from-indigo-50 to-blue-50 px-6 py-3 border-b border-indigo-200">
-                        <h3 class="font-bold text-gray-800 text-sm">Mental Health Crisis</h3>
-                    </div>
-                    <div class="p-6 bg-white">
-                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4">
-                            Officers responded to a call regarding an individual experiencing emotional distress and psychological well-being concerns. Mental health grant resources were provided...
-                        </p>
-                        <button data-example="5" class="load-example-btn w-full px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200 shadow-md">
-                            Load Example
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Example 6: License Plate Hit -->
-                <div class="glass-morphism rounded-xl shadow-lg overflow-hidden border border-white/20 hover:shadow-xl transition-shadow duration-200">
-                    <div class="bg-gradient-to-r from-yellow-50 to-amber-50 px-6 py-3 border-b border-yellow-200">
-                        <h3 class="font-bold text-gray-800 text-sm">License Plate Hit</h3>
-                    </div>
-                    <div class="p-6 bg-white">
-                        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4">
-                            RTCC alert - license plate hit confirmed on a vehicle match. The plate hit indicated the vehicle was reported stolen. Officers initiated pursuit...
-                        </p>
-                        <button data-example="6" class="load-example-btn w-full px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200 shadow-md">
-                            Load Example
-                        </button>
-                    </div>
-                </div>
+            <div id="examples-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Examples will be loaded dynamically -->
             </div>
         </div>
 
@@ -323,8 +235,8 @@
     </footer>
 
     <script>
-        // Define tags with synonyms
-        const tags = {
+        // Define default tags with synonyms - fallback if JSON file not available
+        const defaultTags = {
             'TC2025': ['TC2025', 'speeding', 'traffic violation', 'excessive speed', 'over the limit', 'speeding ticket', 'traffic citation', 'speeding offense', 'reckless driving', 'traffic infraction', 'speeding charge', 'speeding arrest', 'speeding conviction', 'traffic law violation', 'speeding fine', 'speeding penalty'],
             'Drone Located': ['drone spotted', 'uav located', 'unmanned aerial vehicle in sight', 'drones found', 'reconnaissance aircraft spotted', 'piloted remotely', 'airborne unit spotted', 'rpa (recreational pilot aircraft) located', 'sua (small unmanned aircraft) detected', 'uas (unmanned aerial system) in position', 'surveillance aircraft identified', 'pilotless aircraft seen', 'fixed-wing aircraft on site', 'drone airdrome established', 'air surveillance unit spotted', 'rpa sighting confirmed', 'uav identified', 'drones at scene'],
             'DUI': ['DUI', 'driving under the influence', 'dwi', 'dwi charge', 'over the limit', 'dui charge', 'alcohol impairment', 'drunk driving offense', 'dwai', 'drugged driving offense', 'under the influence', 'oui', 'drug-impaired driving', 'impaired driving', 'dui arrest', 'dwi arrest', 'refusal to take dwti test', 'refusal to submit to dwi test', 'breathalyzer test failure', 'blood test result', 'blood alcohol content', 'bac above limit', 'super drinker', 'drunk driving', 'dui conviction', 'dwai conviction', 'impaired driving conviction', 'oui conviction'],
@@ -338,10 +250,13 @@
             'RTCC Alert - License Plate Hit': ['rtcc alert - license plate hit', 'plate hit', 'license plate match', 'plate match', 'vehicle info hit', 'vih', 'driver\'s license hit', 'dl match', 'driver information match', 'dirmatch', 'vehicle identifier confirmed', 'vic', 'plate confirmation', 'lic plate hit', 'motor vehicle alert', 'mva', 'driver\'s license verification', 'dl verification', 'driver info confirmed', 'lic verification', 'plate confirmation number'],
             'RTCC Surveillance Assist': ['rtcc surveillance assist', 'real-time computer-aided communication surveillance support', 'police report computer assistance', 'dispatch surveillance aid', 'radio transmitter computer control surveillance', 'rtcc support', 'surveillance reporting tool for crime control', 'public safety dispatch assistance', 'emergency management information system aid', 'dispatch technical support', 'police dispatch software assist', 'computer-assisted reporting and dispatching', 'rtcc police report assist', 'crimestoppers surveillance aid', 'emergency management reporting tool', 'real-time crime control communication', 'crime reporting and dispatching system', 'police dispatch reporting support'],
             'Traffic Project': ['traffic project', 'u-turn', 'traffic management plan', 'traffic control measures', 'traffic regulation scheme', 'traffic diversion plan', 'traffic rerouting plan', 'road traffic management', 'traffic flow optimization', 'traffic congestion reduction', 'highway management plan', 'traffic study', 'traffic analysis', 'traffic investigation', 'traffic incident response', 'traffics', 'traffic movement plan', 'road traffic management system', 'traffic monitoring program', 'traffic enforcement initiative', 'traffic flow improvement project', 'traffic safety plan', 'traffic control strategy', 'traffic management system', 'traffic stop'],
-            'Narcotics': ['drugs', 'drug possession', 'heroin', 'smack', 'dope', 'skag', 'fentanyl', 'china white', 'dance fever', 'carfentanil', 'drop dead', 'opium', 'black stuff', 'big o', 'midnight oil', 'dream stick', 'oxycodone', 'oxy', 'oxycontin', 'percs', 'hillbilly heroin', 'hydrocodone', 'vikes', 'norco', 'hydros', 'morphine', 'miss emma', 'white stuff', 'codeine', 'cody', 'lean', 'purple drank', 'sizzurp', 'methadone', 'fizzies', 'amidone', 'chocolate chip cookies', 'cocaine', 'coke', 'blow', 'nose candy', 'flake', 'crack cocaine', 'crack', 'base', 'methamphetamine', 'meth', 'crystal meth', 'crank', 'tweak', 'amphetamines', 'bennies', 'black beauties', 'uppers', 'mdma', 'ecstasy', 'molly', 'xtc', 'clarity', 'benzodiazepines', 'benzos', 'xannies', 'z-bars', 'nerve pills', 'barbiturates', 'yellow jackets', 'downers', 'barbs', 'ghb', 'gamma hydroxybutyrate', 'liquid ecstasy', 'grievous bodily harm', 'rohypnol', 'roofies', 'roaches', 'ruffies', 'date rape drug', 'lsd', 'blotter', 'windowpane', 'psilocybin mushrooms', 'shrooms', 'magic mushrooms', 'pcp', 'angel dust', 'sherm', 'rocket fuel', 'ketamine', 'special k', 'cat valium', 'super acid', 'dmt', 'dimethyltryptamine', 'marijuana', 'weed', 'ganja', 'thc concentrates', 'dabs', 'wax', 'shatter', 'honey oil', 'synthetic cannabinoids', 'black mamba', 'crazy clown', 'bath salts', 'flakka', 'bloom', 'cloud nine', 'vanilla sky', 'white lightning', 'synthetic opioids', 'u-47700', 'synthetic hallucinogens', 'n-bomb', 'smiles', 'fentanyl analogues', 'acetylfentanyl', 'furanylfentanyl', 'novel psychoactive substances', 'designer drugs', 'mephedrone', 'meow meow', 'drone', 'bubbles', 'synthetic stimulants', 'plant food', 'glass cleaner', 'synthetic hallucinogens', '2c-b', '2c-i', 'piperazines', 'bzp', 'party pills', 'kratom', 'ketum', 'thang', 'kakuam', 'biak-biak', 'peyote', 'mescaline', 'buttons', 'cactus', 'inhalants', 'laughing gas', 'whippets', 'poppers', 'snappers', 'gabapentin', 'gabbies', 'johnnies', 'pregabalin', 'lyrica', 'tramadol', 'trammies', 'clonazepam', 'klonopin', 'k-pins', 'drug paraphernalia'],
+            'Narcotics': ['drugs', 'drug possession', 'heroin', 'smack', 'dope', 'skag', 'fentanyl', 'china white', 'dance fever', 'carfentanil', 'drop dead', 'opium', 'black stuff', 'big o', 'midnight oil', 'dream stick', 'oxycodone', 'oxy', 'oxycontin', 'percs', 'hillbilly heroin', 'hydrocodone', 'vikes', 'norco', 'hydros', 'morphine', 'miss emma', 'white stuff', 'codeine', 'cody', 'lean', 'purple drank', 'sizzurp', 'methadone', 'fizzies', 'amidone', 'chocolate chip cookies', 'cocaine', 'coke', 'blow', 'nose candy', 'flake', 'crack cocaine', 'crack', 'base', 'methamphetamine', 'meth', 'crystal meth', 'crank', 'tweak', 'amphetamines', 'bennies', 'black beauties', 'uppers', 'mdma', 'ecstasy', 'molly', 'xtc', 'clarity', 'benzodiazepines', 'benzos', 'xannies', 'z-bars', 'nerve pills', 'barbiturates', 'yellow jackets', 'downers', 'barbs', 'ghb', 'gamma hydroxybutyrate', 'liquid ecstasy', 'grievous bodily harm', 'rohypnol', 'roofies', 'roaches', 'ruffies', 'date rape drug', 'lsd', 'blotter', 'windowpane', 'psilocybin mushrooms', 'shrooms', 'magic mushrooms', 'pcp', 'angel dust', 'sherm', 'rocket fuel', 'ketamine', 'special k', 'cat valium', 'super acid', 'dmt', 'dimethyltryptamine', 'marijuana', 'weed', 'ganja', 'thc concentrates', 'dabs', 'wax', 'shatter', 'honey oil', 'synthetic cannabinoids', 'black mamba', 'crazy clown', 'bath salts', 'flakka', 'bloom', 'cloud nine', 'vanilla sky', 'white lightning', 'synthetic opioids', 'u-47700', 'synthetic hallucinogens', 'n-bomb', 'smiles', 'fentanyl analogues', 'acetylfentanyl', 'furanylfentanyl', 'novel psychoactive substances', 'designer drugs', 'mephedrone', 'meow meow', 'drone', 'bubbles', 'synthetic stimulants', 'plant food', 'glass cleaner', 'synthetic hallucinogens', '2c-b', '2c-i', 'piperazines', 'bzp', 'party pills', 'kratom', 'ketum', 'thang', 'kakuam', 'biak-biak', 'peyote', 'mescaline', 'buttons', 'cactus', 'inhalants', 'laughing gas', 'whippets', 'poppers', 'snappers', 'gabapentin', 'gabbies', 'johnnies', 'pregabalin', 'lyrica', 'nerve pain pills'],
             'Trespassing': ['trespassing', 'trespass', 'trespasses', 'trespassed', 'trespasser', 'trespassers', 'trespassing', 'unlawful entry', 'unlawfully entering', 'illegally entering', 'illegal entry', 'intrude', 'intrudes', 'intruded', 'intruding', 'intrusion', 'encroach', 'encroaches', 'encroached', 'encroaching', 'encroachment', 'breaking and entering', 'entering unlawfully', 'unauthorized access', 'unauthorized entry', 'invade', 'invades', 'invaded', 'invading', 'invasion', 'illegal trespassing', 'criminal trespassing', 'illegal entry to property', 'illegal presence', 'entering without permission', 'violating property boundaries', 'unlawful trespass', 'illegal trespass', 'tresspassing', 'tresspass', 'trespasssing', 'trepassing', 'tresspassing', 'trespasin', 'tresspasin', 'trespasing', 'tresppassing', 'trespassers', 'tresspas', 'trespas', 'broke the lock'],
             'Unhoused': ['unhoused', 'homeless', 'houseless', 'without shelter', 'living on the streets', 'street person', 'street dweller', 'vagrant', 'drifter', 'itinerant', 'roofless', 'shelterless', 'without a fixed address', 'independent living', 'unaccompanied minor', 'abandoned', 'derelict', 'resident without a residence', 'individuals experiencing homelessness', 'transient']
         };
+
+        // Variable to store loaded tags
+        let tags = defaultTags;
 
         // Color palette for tags
         const tagColors = [
@@ -355,20 +270,55 @@
             'bg-cyan-100 text-cyan-800 border-cyan-300',
         ];
 
+        // Variable to store tag color map
+        let tagColorMap = {};
+
         // Render available tags
-        const preTrainedTagsDiv = document.getElementById('pre-trained_tags');
-        const tagColorMap = {};
-        Object.keys(tags).forEach((key, index) => {
-            const colorClass = tagColors[index % tagColors.length];
-            tagColorMap[key] = colorClass;
+        function renderTags(tagsData) {
+            const preTrainedTagsDiv = document.getElementById('pre-trained_tags');
+            if (!preTrainedTagsDiv) return;
+
+            // Clear existing tags
+            preTrainedTagsDiv.innerHTML = '';
+            tagColorMap = {};
+
+            Object.keys(tagsData).forEach((key, index) => {
+                const colorClass = tagColors[index % tagColors.length];
+                tagColorMap[key] = colorClass;
+                
+                const tagElement = document.createElement('span');
+                tagElement.className = `inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border ${colorClass} transition-all duration-200 cursor-pointer transform shadow-sm`;
+                tagElement.textContent = key;
+                preTrainedTagsDiv.appendChild(tagElement);
+            });
             
-            const tagElement = document.createElement('span');
-            tagElement.className = `inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium border ${colorClass} transition-all duration-200 cursor-pointer transform shadow-sm`;
-            tagElement.textContent = key;
-            preTrainedTagsDiv.appendChild(tagElement);
-        });
-        
-        document.getElementById('availableTagCount').textContent = Object.keys(tags).length;
+            const availableTagCount = document.getElementById('availableTagCount');
+            if (availableTagCount) {
+                availableTagCount.textContent = Object.keys(tagsData).length;
+            }
+        }
+
+        // Load tags from JSON file or use defaults
+        async function loadTags() {
+            try {
+                const response = await fetch('tags.json');
+                if (response.ok) {
+                    const jsonTags = await response.json();
+                    tags = jsonTags;
+                    console.log('Tags loaded from tags.json');
+                    renderTags(tags);
+                } else {
+                    console.log('tags.json not found, using default tags');
+                    renderTags(defaultTags);
+                }
+            } catch (error) {
+                console.log('Error loading tags.json, using default tags:', error);
+                renderTags(defaultTags);
+            }
+        }
+
+        // Load tags on page load
+        loadTags();
 
         // Constants
         const SILENCE_TIMEOUT_MS = 2000;
@@ -394,7 +344,8 @@
                 return;
             }
 
-            const inputText = textInput.value.toLowerCase();
+            const originalText = textInput.value;
+            const inputText = originalText.toLowerCase();
             const detectedTags = [];
             const keywords = [];
 
@@ -435,12 +386,12 @@
                 return escapeHtml(text).replace(regex, (match) => `<span class="bg-blue-200 text-blue-900 rounded font-semibold">${match}</span>`);
             };
 
-            const textWithLineBreaks = inputText.replace(/\n/g, '\n');
+            const textWithLineBreaks = originalText.replace(/\n/g, '\n');
             const highlightedText = highlightKeywords(textWithLineBreaks);
             outputDiv.innerHTML = highlightedText.replace(/\n/g, '<br>');
 
             // Update character count
-            charCount.textContent = `${inputText.length} characters`;
+            charCount.textContent = `${originalText.length} characters`;
 
             if (detectedTags.length > 0) {
                 resultsDiv.innerHTML = detectedTags.map(tag => {
@@ -490,8 +441,8 @@
             });
         }
 
-        // Example texts
-        const examples = [
+        // Example texts - fallback if JSON file not available
+        const defaultExamples = [
             {
                 "title": "Crime Report",
                 "value": "At 10:45 PM, officers responded to a wreck near Elm Street and Maple Avenue. A disoriented male suspect was found next to an overturned electric scooter. Nearby, signs of a break-in were discovered, and surveillance footage linked the suspect to the crime. A search of his backpack revealed a firearm and methamphetamine. He was arrested for unlawful firearm possession, drug possession, and breaking and entering. The suspect was transported for questioning, and the case remains under investigation."
@@ -518,19 +469,83 @@
             }
         ];
 
-        // Load example buttons
-        document.querySelectorAll('.load-example-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const exampleNum = parseInt(e.target.getAttribute('data-example')) - 1;
-                const example = examples[exampleNum];
-                const textInput = document.getElementById('text-input');
-                if (textInput && example) {
-                    textInput.value = example.value;
-                    detectTags();
-                    textInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
+        // Color schemes for example cards
+        const exampleColorSchemes = [
+            { header: 'from-red-50 to-orange-50', border: 'border-red-200' },
+            { header: 'from-blue-50 to-cyan-50', border: 'border-blue-200' },
+            { header: 'from-purple-50 to-pink-50', border: 'border-purple-200' },
+            { header: 'from-green-50 to-emerald-50', border: 'border-green-200' },
+            { header: 'from-indigo-50 to-blue-50', border: 'border-indigo-200' },
+            { header: 'from-yellow-50 to-amber-50', border: 'border-yellow-200' }
+        ];
+
+        // Variable to store loaded examples
+        let examples = defaultExamples;
+
+        // Render examples dynamically
+        function renderExamples(examplesData) {
+            const examplesContainer = document.getElementById('examples-container');
+            if (!examplesContainer) return;
+
+            examplesContainer.innerHTML = examplesData.map((example, index) => {
+                const colorScheme = exampleColorSchemes[index % exampleColorSchemes.length];
+                const truncatedText = example.value.length > 150 
+                    ? example.value.substring(0, 150) + '...' 
+                    : example.value;
+
+                return `
+                    <div class="glass-morphism rounded-xl shadow-lg overflow-hidden border border-white/20 hover:shadow-xl transition-shadow duration-200">
+                        <div class="bg-gradient-to-r ${colorScheme.header} px-6 py-3 border-b ${colorScheme.border}">
+                            <h3 class="font-bold text-gray-800 text-sm">${escapeHtml(example.title)}</h3>
+                        </div>
+                        <div class="p-6 bg-white">
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-4 min-h-[5rem]">
+                                ${escapeHtml(truncatedText)}
+                            </p>
+                            <button data-example="${index}" class="load-example-btn w-full px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200 shadow-md">
+                                Load Example
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Attach event listeners to dynamically created buttons
+            document.querySelectorAll('.load-example-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const exampleNum = parseInt(e.target.getAttribute('data-example'));
+                    const example = examples[exampleNum];
+                    const textInput = document.getElementById('text-input');
+                    if (textInput && example) {
+                        textInput.value = example.value;
+                        detectTags();
+                        textInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
             });
-        });
+        }
+
+        // Load examples from JSON file or use defaults
+        async function loadExamples() {
+            try {
+                const response = await fetch('examples.json');
+                if (response.ok) {
+                    const jsonExamples = await response.json();
+                    examples = jsonExamples;
+                    console.log('Examples loaded from examples.json');
+                    renderExamples(examples);
+                } else {
+                    console.log('examples.json not found, using default examples');
+                    renderExamples(defaultExamples);
+                }
+            } catch (error) {
+                console.log('Error loading examples.json, using default examples:', error);
+                renderExamples(defaultExamples);
+            }
+        }
+
+        // Load examples on page load
+        loadExamples();
 
         // Speech recognition
         const startBtn = document.getElementById('startBtn');
