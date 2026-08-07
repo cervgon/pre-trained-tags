@@ -348,6 +348,8 @@
             const inputText = originalText.toLowerCase();
             const detectedTags = [];
             const keywords = [];
+            const keywordToTagMap = {}; // Map keywords to their tags
+            const tagToKeywordsMap = {}; // Map tags to their detected keywords
 
             function containsWholeWord(text, word) {
                 const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -363,6 +365,16 @@
                         }
                         if (!keywords.includes(synonym)) {
                             keywords.push(synonym);
+                        }
+                        // Map the keyword to its tag (lowercase for matching)
+                        keywordToTagMap[synonym.toLowerCase()] = tag;
+                        
+                        // Map the tag to its detected keywords
+                        if (!tagToKeywordsMap[tag]) {
+                            tagToKeywordsMap[tag] = [];
+                        }
+                        if (!tagToKeywordsMap[tag].includes(synonym)) {
+                            tagToKeywordsMap[tag].push(synonym);
                         }
                     }
                 }
@@ -383,7 +395,12 @@
                     regex = new RegExp(`\\b(${escapedKeywords.join('|')})\\b`, 'gi');
                 }
                 
-                return escapeHtml(text).replace(regex, (match) => `<span class="bg-blue-200 text-blue-900 rounded font-semibold">${match}</span>`);
+                return escapeHtml(text).replace(regex, (match) => {
+                    // Find the tag for this keyword
+                    const tag = keywordToTagMap[match.toLowerCase()];
+                    const tooltipText = tag ? escapeHtml(tag) : '';
+                    return `<span class="bg-blue-200 text-blue-900 rounded font-semibold cursor-help" title="${tooltipText}">${match}</span>`;
+                });
             };
 
             const textWithLineBreaks = originalText.replace(/\n/g, '\n');
@@ -397,11 +414,17 @@
                 resultsDiv.innerHTML = detectedTags.map(tag => {
                     const colorClass = tagColorMap[tag] || 'bg-gray-100 text-gray-800 border-gray-300';
                     const escapedTag = escapeHtml(tag);
-                    return `<div class="flex items-center px-4 py-3 rounded-lg border-2 ${colorClass} transition-all duration-200 transform hover:scale-102 shadow-md">
-                        <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                        </svg>
-                        <span class="text-sm font-semibold">${escapedTag}</span>
+                    const detectedWords = tagToKeywordsMap[tag] || [];
+                    const detectedWordsText = detectedWords.map(w => escapeHtml(w)).join(', ');
+                    
+                    return `<div class="px-4 py-3 rounded-lg border-2 ${colorClass} transition-all duration-200 transform hover:scale-102 shadow-md">
+                        <div class="flex items-center mb-1">
+                            <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm font-semibold">${escapedTag}</span>
+                        </div>
+                        <div class="ml-8 text-xs text-gray-500 italic">${detectedWordsText}</div>
                     </div>`;
                 }).join('');
                 tagCounter.textContent = `${detectedTags.length}`;
@@ -482,6 +505,49 @@
         // Variable to store loaded examples
         let examples = defaultExamples;
 
+        // Variables to control typing animation
+        let isTyping = false;
+        let typingId = 0;
+
+        // Function to stop ongoing typing
+        function stopTyping() {
+            typingId++;
+            isTyping = false;
+        }
+
+        // Function to simulate typing effect
+        async function simulateTyping(inputElement, text, speed = 5) {
+            // Assign a unique ID to this typing session
+            const myTypingId = ++typingId;
+            isTyping = true;
+            
+            inputElement.value = '';
+            let currentText = '';
+            
+            for (let i = 0; i < text.length; i++) {
+                // Check if this typing session was cancelled
+                if (myTypingId !== typingId || !isTyping) {
+                    return;
+                }
+                
+                currentText += text[i];
+                inputElement.value = currentText;
+                
+                // Trigger input event to update tags
+                detectTags();
+                
+                // Scroll to keep cursor visible
+                inputElement.scrollTop = inputElement.scrollHeight;
+                
+                // Wait for the typing speed (milliseconds per character)
+                await new Promise(resolve => setTimeout(resolve, speed));
+            }
+            
+            // Final scroll to bottom after typing completes
+            inputElement.scrollTop = inputElement.scrollHeight;
+            isTyping = false;
+        }
+
         // Render examples dynamically
         function renderExamples(examplesData) {
             const examplesContainer = document.getElementById('examples-container');
@@ -512,14 +578,26 @@
 
             // Attach event listeners to dynamically created buttons
             document.querySelectorAll('.load-example-btn').forEach(button => {
-                button.addEventListener('click', (e) => {
+                button.addEventListener('click', async (e) => {
                     const exampleNum = parseInt(e.target.getAttribute('data-example'));
                     const example = examples[exampleNum];
                     const textInput = document.getElementById('text-input');
                     if (textInput && example) {
-                        textInput.value = example.value;
+                        // Stop any ongoing typing animation
+                        stopTyping();
+                        
+                        // Clear the input first
+                        textInput.value = '';
                         detectTags();
+                        
+                        // Scroll to textbox
                         textInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Wait 1 second and start typing
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        
+                        // Simulate typing (it will check if cancelled internally)
+                        await simulateTyping(textInput, example.value);
                     }
                 });
             });
