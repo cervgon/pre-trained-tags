@@ -164,9 +164,9 @@
                 </div>
 
                 <!-- Detected Tags (Right - 1/3) -->
-                <div class="lg:col-span-1">
-                    <div class="glass-morphism rounded-2xl shadow-xl border border-white/20 overflow-hidden h-full">
-                        <div class="bg-gradient-to-r from-primary-50 to-purple-50 px-6 py-4 border-b border-gray-200">
+                <div class="lg:col-span-1 flex">
+                    <div class="glass-morphism rounded-2xl shadow-xl border border-white/20 overflow-hidden flex flex-col w-full">
+                        <div class="bg-gradient-to-r from-primary-50 to-purple-50 px-6 py-4 border-b border-gray-200 flex-shrink-0">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-lg font-bold text-gray-800 flex items-center">
                                     <svg class="w-6 h-6 mr-2 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
@@ -179,7 +179,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="p-6 overflow-y-auto" style="max-height: 568px;">
+                        <div class="p-6 overflow-y-auto" style="min-height: 500px; max-height: 500px;">
                             <div id="detected-tags" class="flex flex-col gap-2">
                                 <div class="text-gray-400 text-sm italic text-center py-8">
                                     Start typing to see detected tags...
@@ -346,23 +346,31 @@
 
             const originalText = textInput.value;
             const inputText = originalText.toLowerCase();
-            const detectedTags = [];
+            const detectedTagsMap = {}; // Map tags to their first occurrence position
             const keywords = [];
             const keywordToTagMap = {}; // Map keywords to their tags
             const tagToKeywordsMap = {}; // Map tags to their detected keywords
 
-            function containsWholeWord(text, word) {
+            function findWholeWordPosition(text, word) {
                 const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const regex = new RegExp(`\\b${escapedWord}\\b`, 'i');
-                return regex.test(text);
+                const match = regex.exec(text);
+                return match ? match.index : -1;
+            }
+
+            function containsWholeWord(text, word) {
+                return findWholeWordPosition(text, word) !== -1;
             }
 
             for (const [tag, synonyms] of Object.entries(tags)) {
                 for (const synonym of synonyms) {
-                    if (containsWholeWord(inputText, synonym)) {
-                        if (!detectedTags.includes(tag)) {
-                            detectedTags.push(tag);
+                    const position = findWholeWordPosition(inputText, synonym);
+                    if (position !== -1) {
+                        // Track the earliest position this tag was found
+                        if (!(tag in detectedTagsMap) || position < detectedTagsMap[tag]) {
+                            detectedTagsMap[tag] = position;
                         }
+                        
                         if (!keywords.includes(synonym)) {
                             keywords.push(synonym);
                         }
@@ -379,6 +387,11 @@
                     }
                 }
             }
+
+            // Sort tags by their first occurrence position
+            const detectedTags = Object.keys(detectedTagsMap).sort((a, b) => {
+                return detectedTagsMap[a] - detectedTagsMap[b];
+            });
 
             const highlightKeywords = (text) => {
                 if (keywords.length === 0) return escapeHtml(text);
@@ -416,8 +429,9 @@
                     const escapedTag = escapeHtml(tag);
                     const detectedWords = tagToKeywordsMap[tag] || [];
                     const detectedWordsText = detectedWords.map(w => escapeHtml(w)).join(', ');
+                    const position = detectedTagsMap[tag];
                     
-                    return `<div class="px-4 py-3 rounded-lg border-2 ${colorClass} transition-all duration-200 transform hover:scale-102 shadow-md">
+                    return `<div class="px-4 py-3 rounded-lg border-2 ${colorClass} transition-all duration-200 transform hover:scale-105 shadow-md cursor-pointer" data-tag-position="${position}" onclick="scrollToTagPosition(${position})">
                         <div class="flex items-center mb-1">
                             <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
@@ -439,6 +453,27 @@
         const textInputElement = document.getElementById('text-input');
         if (textInputElement) {
             textInputElement.addEventListener('input', detectTags);
+        }
+
+        // Function to scroll to tag position in the text input
+        function scrollToTagPosition(position) {
+            const textInput = document.getElementById('text-input');
+            if (!textInput) return;
+            
+            // Focus on the text input
+            textInput.focus();
+            
+            // Set cursor position
+            textInput.setSelectionRange(position, position);
+            
+            // Calculate approximate scroll position
+            // Each line is roughly 28px (text-lg line height)
+            const textBeforePosition = textInput.value.substring(0, position);
+            const linesBefore = textBeforePosition.split('\n').length;
+            const approximateScrollTop = (linesBefore - 1) * 28;
+            
+            // Scroll the textarea
+            textInput.scrollTop = Math.max(0, approximateScrollTop - 100); // Offset by 100px to center it better
         }
 
         // Sync scroll between textarea and outputDiv
@@ -516,7 +551,7 @@
         }
 
         // Function to simulate typing effect
-        async function simulateTyping(inputElement, text, speed = 5) {
+        async function simulateTyping(inputElement, text, speed = 2) {
             // Assign a unique ID to this typing session
             const myTypingId = ++typingId;
             isTyping = true;
